@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <meta charset="UTF-8">
+        <title>anchor</title>
+        <style>
+            *{
+                margin:0;
+                padding:0;
+            }
+            #wei{
+                width:500px;
+                height:300px;
+                margin:0 auto;
+                border:0px solid gray;
+            }
+            #wei input{
+                    width:476px;
+                    height:50px;
+                    line-height: 50px;
+                    padding-left:20px;
+                    font-size: 16px;
+            }
+            #wei ul{
+                height:auto;
+                border:1px solid #ccc;
+                display: none;
+            }
+            #wei ul li{
+                    width:100%;
+                    height:30px;
+                    line-height: 30px;
+                    text-indent:10px;
+                    font-size: 16px;
+                    list-style: none;
+            }
+            #wei ul li a{
+                    text-decoration:none;
+            }
+            #wei ul li:hover{
+                display:block;
+                background:#ccc;
+                color:#fff;
+            }
+        </style>
+    </head>
+    <body ng-controller="show">
+            <div id="wei">
+                <input type="text" id="text">
+                <ul id="list"></ul>
+            </div>
+
+            <b>要解码的16进制字符串</b>
+<textarea id="taSource" cols="30" rows="5">\x61\x62\x63\u4e2d\u56fd</textarea>
+<b>解码后的16进制内容</b>
+<textarea id="taRst" cols="30" rows="5"></textarea>
+<input type="button" value="将16进制编码字符串为对应内容" onclick="document.getElementById('taRst').value = hexToString(document.getElementById('taSource').value)" />
+        <script type="text/javascript">
+            var txt = document.getElementById("text");
+            var oUl = document.getElementById("list");
+            txt.onkeyup = function(){
+                var val = txt.value;
+                var oScript = document.createElement("script");//动态创建script标签
+                // oScript.src = "https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd="+val+"&cb=callback";
+                oScript.src = `http://suggestion.baidu.com/su?wd=${val}&cb=window.baidu.sug`;
+                //添加链接及回调函数
+                document.body.appendChild(oScript);//添加script标签
+                document.body.removeChild(oScript);//删除script标签
+            }
+            //回调函数
+            // function callback(data){
+            window.baidu = {
+                sug : function(data){
+                        console.log(data);
+                        var str="";
+                        for(var i=0;i<data.s.length;i++){
+                            str += "<li><a href=\"https://www.baidu.com/s?wd="+data.s[i]+"\">"+data.s[i]+"</a></li>";
+                        }
+                        //console.log(str);
+                        oUl.innerHTML=str;
+                        oUl.style.display="block";
+
+                    }
+        }
+        </script>
+        <script type="text/javascript">
+        function hexToString(str) {
+            var mc = str.match(/\\x[a-z\d]{2}|\\u[a-z\d]{4}/gi);
+            var val = '';
+            for (var i = 0, j = mc.length; i < j; i++) {
+                val += String.fromCharCode(parseInt(mc[i].substring(2), 16));
+            }
+            return val;
+        }
+        </script>
+    </body>
+</html>
